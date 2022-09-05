@@ -1,0 +1,7 @@
+name: got_key_scraping
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - selenium==3.13.0
+  - webdriver-manager
