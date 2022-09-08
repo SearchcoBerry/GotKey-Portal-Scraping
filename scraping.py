@@ -13,7 +13,7 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
-def fetch_portal(id, password):
+def fetch_portal(id, password, max_page):
     options = Options()
     options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
@@ -36,19 +36,19 @@ def fetch_portal(id, password):
     info_pages = info_container.find_elements_by_tag_name('tr')
 
     for i in range(len(info_pages)):
-        date = info_pages[i].find_element_by_class_name('day').text
-        title_container = info_pages[i].find_element_by_class_name('title')
-        title = title_container.find_element_by_tag_name('a').text
-        print(i, title)
-        print(f"{i}: {date} {title}")
+        if int(max_page) > i:
+            date = info_pages[i].find_element_by_class_name('day').text
+            title_container = info_pages[i].find_element_by_class_name('title')
+            title = title_container.find_element_by_tag_name('a').text
+            print(f"{i}: {date} {title}")
 
-    time.sleep(4)
     driver.quit()
 
 def main():
     id = os.environ['OKIU_ID']
     password = os.environ['OKIU_PASS']
-    fetch_portal(id, password)
+    max_page = os.environ['MAX_PAGE']
+    fetch_portal(id, password, max_page)
 
 if __name__ == "__main__":
     main()
