@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
 
 #import chromedriver_binary
 import os
@@ -14,8 +15,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def fetch_portal(id, password, max_page):
+    """学内ポータルの情報を取得
+    :id: 学籍番号
+    :type id: str
+    :password: パス
+    :type password: str
+    :max_page: お知らせ取得回数
+    :type max_page: int
+    :returns: 取得したお知らせ情報
+    """
+
     options = Options()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
     driver.get("https://lc.okiu.ac.jp/portal/")
     id_el = driver.find_element_by_id('userID')
@@ -25,7 +36,7 @@ def fetch_portal(id, password, max_page):
     submit = driver.find_element_by_class_name('btn_login')
     submit.click()
 
-    time.sleep(3)
+    WebDriverWait(driver, 3).until(lambda d: len(d.window_handles) > 1)
     window = driver.window_handles[-1]   # ウィンドウ情報を取得
     driver.switch_to.window(window)       # 遷移先のウィンドウに遷移元のウィンドウ情報を移す
 
