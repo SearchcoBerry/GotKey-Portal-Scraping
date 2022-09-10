@@ -1,0 +1,28 @@
+version: "3"
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24
+          gateway: 192.168.200.1
+services:
+  chrome_driver:
+    image: selenium/standalone-chrome-debug
+    ports:
+      - "5900:5900"
+    networks:
+      app_net:
+        ipv4_address: 192.168.200.11
+  flask_api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./flask-server:/flask-server
+    networks:
+      app_net:
+        ipv4_address: 192.168.200.12
+    command: >
+      sh -c "python run_server.py"
