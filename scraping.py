@@ -1,11 +1,10 @@
-from tabnanny import filename_only
 import time
-from tkinter.ttk import PanedWindow
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 #import chromedriver_binary
 import os
@@ -27,7 +26,13 @@ def fetch_portal(id, password, max_page):
 
     options = Options()
     options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
+    # driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
+
+    driver = webdriver.Remote(
+        command_executor=os.environ["SELENIUM_URL"],
+        desired_capabilities=DesiredCapabilities.CHROME.copy(),
+        chrome_options=options
+    )
     driver.get("https://lc.okiu.ac.jp/portal/")
     id_el = driver.find_element_by_id('userID')
     id_el.send_keys(id)
