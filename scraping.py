@@ -1,6 +1,7 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
@@ -15,7 +16,7 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
-def fetch_portal(id, password, max_page):
+def fetch_portal(driver_path, id, password, max_page):
     """学内ポータルの情報を取得
     :id: 学籍番号
     :type id: str
@@ -26,9 +27,11 @@ def fetch_portal(id, password, max_page):
     :returns: 取得したお知らせ情報
     """
 
-    options = Options()
-    # options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    service = ChromeService(executable_path=driver_path)
+    driver = webdriver.Chrome(service=service, options=options)
+
     driver.get("https://lc.okiu.ac.jp/portal/")
     id_el = driver.find_element(By.ID, 'userID')
     id_el.send_keys(id)
@@ -57,10 +60,11 @@ def fetch_portal(id, password, max_page):
     driver.quit()
 
 def main():
+    driver_path = os.environ['DRIVER_PATH']
     id = os.environ['OKIU_ID']
     password = os.environ['OKIU_PASS']
     max_page = os.environ['MAX_PAGE']
-    fetch_portal(id, password, max_page)
+    fetch_portal(driver_path, id, password, max_page)
 
 if __name__ == "__main__":
     main()
