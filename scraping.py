@@ -50,12 +50,16 @@ def fetch_portal(driver_path, id, password, max_page):
     info_container = driver.find_element(By.ID, 'tbl_news')
     info_pages = info_container.find_elements(By.TAG_NAME, 'tr')
 
+    info_header_list = []
     for i in range(len(info_pages)):
         if int(max_page) > i:
             date = info_pages[i].find_element(By.CLASS_NAME, 'day').text 
             title_container = info_pages[i].find_element(By.CLASS_NAME, 'title')
-            title = title_container.find_element(By.TAG_NAME, 'a').text 
-            print(f"{i}: {date} {title}")
+            title = title_container.find_element(By.TAG_NAME, 'a').text
+            header = {'date': date, 'title': title}
+            info_header_list.append(header)
+            # print(f"{i}: {date} {title}")
+    return info_header_list
 
     driver.quit()
 
