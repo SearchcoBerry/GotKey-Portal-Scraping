@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel  # リクエストbodyを定義するために必要
 from typing import List  # ネストされたBodyを定義するために必要
-from scraping import fetch_portal
+import scraping
 
 app = FastAPI()
 
@@ -15,8 +15,9 @@ class User(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/news")
+@app.post("/informations")
 def get_news(user: User, max_page: int = Query(default=30)):
     driver_path = './chromedriver'
-    info_lists = fetch_portal(driver_path, user.id, user.password, max_page)
+    login_info = scraping.login(driver_path, user.id, user.password)
+    info_lists = scraping.fetch_info(login_info, max_page)
     return info_lists
