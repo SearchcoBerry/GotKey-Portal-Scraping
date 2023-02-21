@@ -17,7 +17,6 @@ def read_root():
 
 @app.post("/informations")
 def get_news(user: User, max_page: int = Query(default=30)):
-    driver_path = './chromedriver'
-    login_info = scraping.login(driver_path, user.id, user.password)
+    login_info = scraping.login(user.id, user.password)
     info_lists = scraping.fetch_info(login_info, max_page)
     return info_lists

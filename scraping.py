@@ -8,6 +8,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from webdriver_manager.chrome import ChromeDriverManager
+
 #import chromedriver_binary
 import os
 import time
@@ -15,7 +17,7 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
-def login(driver_path, id, password):
+def login(id, password):
     """学内ポータルの情報を取得
     :id: 学籍番号
     :type id: str
@@ -25,8 +27,8 @@ def login(driver_path, id, password):
     """
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
-    service = ChromeService(executable_path=driver_path)
-    driver = webdriver.Chrome(service=service, options=options)
+    # service = ChromeService(executable_path=driver_path)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     driver.get("https://lc.okiu.ac.jp/portal/")
     id_el = driver.find_element(By.ID, 'userID')
@@ -119,11 +121,11 @@ def _fetch_portal(driver_path, id, password, max_page):
     return info_header_list
 
 def main():
-    driver_path = os.environ['DRIVER_PATH']
+    # driver_path = os.environ['DRIVER_PATH']
     id = os.environ['OKIU_ID']
     password = os.environ['OKIU_PASS']
     max_page = os.environ['MAX_PAGE']
-    setting = login(driver_path, id, password)
+    setting = login(id, password)
     fetch_info(setting, max_page)
 
 if __name__ == "__main__":
